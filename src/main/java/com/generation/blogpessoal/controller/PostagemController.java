@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.generation.blogpessoal.model.Postagem;
 import com.generation.blogpessoal.repository.PostagemRepository;
+import com.generation.blogpessoal.repository.TemaRepository;
 
 @RestController // indica que é uma classe controladora do tipo rest
 @RequestMapping("/postagens")
@@ -28,6 +29,9 @@ public class PostagemController {
 
 	@Autowired
 	private PostagemRepository postagemRepository;
+
+	@Autowired
+	private TemaRepository temaRepository;
 
 	// listagem de posts
 	@GetMapping
@@ -51,17 +55,19 @@ public class PostagemController {
 	// cadastrar postagem
 	@PostMapping
 	public ResponseEntity<Postagem> postPostagem(@Valid @RequestBody Postagem postagem) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(postagemRepository.save(postagem));
+		if (temaRepository.existsById(postagem.getTema().getId()))
+			return ResponseEntity.status(HttpStatus.CREATED).body(postagemRepository.save(postagem));
+		return ResponseEntity.notFound().build();
 	}
 
 	// editar postagem
 	@PutMapping
 	public ResponseEntity<Postagem> putPostagem(@Valid @RequestBody Postagem postagem) {
-		return postagemRepository.findById(postagem.getId())
-				.map(resposta -> ResponseEntity.ok(postagemRepository.save(postagem)))
-				.orElse(ResponseEntity.notFound().build());
-	}
-
+		if (temaRepository.existsById(postagem.getTema().getId())) 
+			return ResponseEntity.ok(postagemRepository.save(postagem));
+			return ResponseEntity.notFound().build();
+		}
+		
 	// deletar postagem
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deletePostagem(@PathVariable Long id) {
@@ -71,6 +77,5 @@ public class PostagemController {
 		}).orElse(ResponseEntity.notFound().build());
 
 	}
-	
 
 }
