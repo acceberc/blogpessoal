@@ -61,12 +61,14 @@ public class PostagemController {
 	}
 
 	// editar postagem
-	@PutMapping
 	public ResponseEntity<Postagem> putPostagem(@Valid @RequestBody Postagem postagem) {
-		if (temaRepository.existsById(postagem.getTema().getId())) 
-			return ResponseEntity.ok(postagemRepository.save(postagem));
-			return ResponseEntity.notFound().build();
+		if (postagemRepository.existsById(postagem.getId())) {
+			return temaRepository.findById(postagem.getTema().getId())
+					.map(resposta -> ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem)))
+					.orElse(ResponseEntity.badRequest().build());
 		}
+		return ResponseEntity.notFound().build();
+	}
 		
 	// deletar postagem
 	@DeleteMapping("/{id}")
