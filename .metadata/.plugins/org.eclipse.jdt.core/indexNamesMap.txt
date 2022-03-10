@@ -1,3 +1,1 @@
 INDEX VERSION 1.131
-file:/C:/Users/notebook/Documents/workspace-springtool-suite-4-4.10.0.RELEASE/blogpessoal/.metadata/.plugins/org.eclipse.jdt.core/1865797976.index
-meta_index

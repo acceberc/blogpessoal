@@ -61,6 +61,7 @@ public class PostagemController {
 	}
 
 	// editar postagem
+	@PutMapping
 	public ResponseEntity<Postagem> putPostagem(@Valid @RequestBody Postagem postagem) {
 		if (postagemRepository.existsById(postagem.getId())) {
 			return temaRepository.findById(postagem.getTema().getId())
